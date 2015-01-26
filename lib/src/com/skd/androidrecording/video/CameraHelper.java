@@ -16,14 +16,14 @@
 
 package com.skd.androidrecording.video;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.view.Surface;
+
+import java.util.List;
 
 /*
  * Represents camera management helper class.
@@ -58,7 +58,13 @@ public class CameraHelper {
 	@SuppressLint("NewApi")
 	public static List<Size> getCameraSupportedVideoSizes(android.hardware.Camera camera) {
 		if ((Build.VERSION.SDK_INT >= 11) && (camera != null)) {
-			return camera.getParameters().getSupportedVideoSizes();
+			if (camera.getParameters().getSupportedVideoSizes() != null) {
+				return camera.getParameters().getSupportedVideoSizes();
+			} else {
+				// Video sizes may be null, which indicates that all the supported
+				// preview sizes are supported for video recording.
+				return camera.getParameters().getSupportedPreviewSizes();
+			}
 		}
 		else {
 			return null;

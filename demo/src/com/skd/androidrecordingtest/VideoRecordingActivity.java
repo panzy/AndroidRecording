@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
 import com.skd.androidrecording.video.AdaptiveSurfaceView;
@@ -78,6 +79,10 @@ public class VideoRecordingActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		//Remove title bar
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		setContentView(R.layout.video_rec);
 		
 		if (!StorageUtils.checkExternalStorageAvailable()) {

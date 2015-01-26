@@ -1,4 +1,4 @@
-package com.skd.androidrecordingtest;
+package com.skd.androidrecording.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,13 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-
+import com.skd.androidrecording.R;
 import com.skd.androidrecording.audio.AudioRecordingHandler;
 import com.skd.androidrecording.audio.AudioRecordingThread;
 import com.skd.androidrecording.visualizer.VisualizerView;
 import com.skd.androidrecording.visualizer.renderer.BarGraphRenderer;
-import com.skd.androidrecordingtest.utils.NotificationUtils;
-import com.skd.androidrecordingtest.utils.StorageUtils;
 
 public class AudioRecordingActivity extends Activity {
 	private static String fileName = null;

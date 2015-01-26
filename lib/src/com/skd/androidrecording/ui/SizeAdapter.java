@@ -1,4 +1,4 @@
-package com.skd.androidrecordingtest;
+package com.skd.androidrecording.ui;
 
 import java.util.List;
 

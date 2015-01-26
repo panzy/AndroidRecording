@@ -1,4 +1,4 @@
-package com.skd.androidrecordingtest;
+package com.skd.androidrecording.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,12 +12,11 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
+import com.skd.androidrecording.R;
 import com.skd.androidrecording.video.AdaptiveSurfaceView;
 import com.skd.androidrecording.video.CameraHelper;
 import com.skd.androidrecording.video.VideoRecordingHandler;
 import com.skd.androidrecording.video.VideoRecordingManager;
-import com.skd.androidrecordingtest.utils.NotificationUtils;
-import com.skd.androidrecordingtest.utils.StorageUtils;
 
 import java.io.File;
 import java.util.ArrayList;

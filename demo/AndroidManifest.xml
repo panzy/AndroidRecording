@@ -33,21 +33,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.skd.androidrecordingtest.AudioRecordingActivity"
+            android:name="com.skd.androidrecording.ui.AudioRecordingActivity"
             android:label="@string/audioActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.skd.androidrecordingtest.AudioPlaybackActivity"
+            android:name="com.skd.androidrecording.ui.AudioPlaybackActivity"
             android:label="@string/playActivity" >
         </activity>
         <activity
-            android:name="com.skd.androidrecordingtest.VideoRecordingActivity"
+            android:name="com.skd.androidrecording.ui.VideoRecordingActivity"
             android:label="@string/videoActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.skd.androidrecordingtest.VideoPlaybackActivity"
+            android:name="com.skd.androidrecording.ui.VideoPlaybackActivity"
             android:label="@string/playActivity" >
         </activity>
     </application>

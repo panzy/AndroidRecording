@@ -1,4 +1,4 @@
-package com.skd.androidrecordingtest.utils;
+package com.skd.androidrecording.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -1,25 +1,22 @@
-package com.skd.androidrecordingtest;
+package com.skd.androidrecording.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.MotionEvent;
-
-import com.skd.androidrecording.audio.AudioPlaybackManager;
+import com.skd.androidrecording.R;
+import com.skd.androidrecording.video.AdaptiveSurfaceView;
 import com.skd.androidrecording.video.PlaybackHandler;
-import com.skd.androidrecording.visualizer.VisualizerView;
-import com.skd.androidrecording.visualizer.renderer.BarGraphRenderer;
+import com.skd.androidrecording.video.VideoPlaybackManager;
 
-public class AudioPlaybackActivity extends Activity {
+public class VideoPlaybackActivity extends Activity {
 	public static String FileNameArg = "arg_filename";
 	
 	private static String fileName = null;
 	
-	private VisualizerView visualizerView;
+	private AdaptiveSurfaceView videoView;
 	
-	private AudioPlaybackManager playbackManager;
+	private VideoPlaybackManager playbackManager;
 	
 	private PlaybackHandler playbackHandler = new PlaybackHandler() {
 		@Override
@@ -35,17 +32,16 @@ public class AudioPlaybackActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.audio_play);
+		setContentView(R.layout.video_play);
 	
 		Intent i = getIntent();
 		if ((i != null) && (i.getExtras() != null)) {
 			fileName = i.getExtras().getString(FileNameArg);
 		}
 		
-		visualizerView = (VisualizerView) findViewById(R.id.visualizerView);
-		setupVisualizer();
+		videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
 		
-		playbackManager = new AudioPlaybackManager(this, visualizerView, playbackHandler);
+		playbackManager = new VideoPlaybackManager(this, videoView, playbackHandler);
 		playbackManager.setupPlayback(fileName);
 	}
 	
@@ -69,14 +65,5 @@ public class AudioPlaybackActivity extends Activity {
 		playbackHandler = null;
 		
 		super.onDestroy();
-	}
-	
-	private void setupVisualizer() {
-		Paint paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setAntiAlias(true);
-        paint.setColor(Color.argb(200, 227, 69, 53));
-        BarGraphRenderer barGraphRendererBottom = new BarGraphRenderer(2, paint, false);
-        visualizerView.addRenderer(barGraphRendererBottom);
 	}
 }

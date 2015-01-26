@@ -25,6 +25,8 @@ public class VideoRecordingActivity extends Activity {
 	public static final String EXTRA_PREFERRED_WIDTH = "preferred_width";
 	/** 输入参数：优先采用的视频尺寸（像素）。 */
 	public static final String EXTRA_PREFERRED_HEIGHT = "preferred_height";
+	/** 输入参数：最大允许的文件尺寸（字节, Int） */
+	public static final String EXTRA_FILE_LIMIT = "file_limit";
 
 	private static String fileName = null;
     
@@ -35,6 +37,7 @@ public class VideoRecordingActivity extends Activity {
 	private Size videoSize = null;
 	private int preferredWidth;
 	private int preferredHeight;
+	private int fileLimit = 0;
 	private ArrayList<Size> supportedSizes = new ArrayList<Size>();
 	private VideoRecordingManager recordingManager;
 	
@@ -57,6 +60,16 @@ public class VideoRecordingActivity extends Activity {
 		public int getDisplayRotation() {
 			return VideoRecordingActivity.this.getWindowManager().getDefaultDisplay().getRotation();
 		}
+
+		@Override
+		public void onStoppedRecording() {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					updateUiStateForNotRecording();
+				}
+			});
+		}
 	};
 	
 	@Override
@@ -73,9 +86,11 @@ public class VideoRecordingActivity extends Activity {
 		if (savedInstanceState != null) {
 			preferredWidth = savedInstanceState.getInt(EXTRA_PREFERRED_WIDTH);
 			preferredHeight = savedInstanceState.getInt(EXTRA_PREFERRED_HEIGHT);
+			fileLimit = savedInstanceState.getInt(EXTRA_FILE_LIMIT);
 		} else if (getIntent() != null) {
 			preferredWidth = getIntent().getIntExtra(EXTRA_PREFERRED_WIDTH, 0);
 			preferredHeight = getIntent().getIntExtra(EXTRA_PREFERRED_HEIGHT, 0);
+			fileLimit = getIntent().getIntExtra(EXTRA_FILE_LIMIT, 0);
 		}
 		
 		AdaptiveSurfaceView videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
@@ -185,28 +200,36 @@ public class VideoRecordingActivity extends Activity {
 	}
 	
 	private void record() {
-		if (recordingManager.stopRecording()) {
-			recordBtn.setText(R.string.recordBtn);
-			switchBtn.setEnabled(true);
-			playBtn.setEnabled(true);
-			videoSizeSpinner.setEnabled(true);
+		if (recordingManager.stopRecording(false)) {
+			updateUiStateForNotRecording();
 		}
 		else {
 			startRecording();
 		}
 	}
-	
+
 	private void startRecording() {
-		if (recordingManager.startRecording(fileName, videoSize)) {
-			recordBtn.setText(R.string.stopRecordBtn);
-			switchBtn.setEnabled(false);
-			playBtn.setEnabled(false);
-			videoSizeSpinner.setEnabled(false);
+		if (recordingManager.startRecording(fileName, videoSize, fileLimit)) {
+			updateUiStateForRecording();
 			return;
 		}
 		Toast.makeText(this, getString(R.string.videoRecordingError), Toast.LENGTH_LONG).show();
 	}
-	
+
+	private void updateUiStateForNotRecording() {
+		recordBtn.setText(R.string.recordBtn);
+		switchBtn.setEnabled(true);
+		playBtn.setEnabled(true);
+		videoSizeSpinner.setEnabled(true);
+	}
+
+	private void updateUiStateForRecording() {
+		recordBtn.setText(R.string.stopRecordBtn);
+		switchBtn.setEnabled(false);
+		playBtn.setEnabled(false);
+		videoSizeSpinner.setEnabled(false);
+	}
+
 	private void play() {
 		Intent i = new Intent(VideoRecordingActivity.this, VideoPlaybackActivity.class);
 		i.putExtra(VideoPlaybackActivity.FileNameArg, fileName);

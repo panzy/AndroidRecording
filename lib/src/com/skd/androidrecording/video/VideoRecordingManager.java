@@ -17,18 +17,24 @@
 package com.skd.androidrecording.video;
 
 import android.hardware.Camera.Size;
+import android.util.Log;
 import android.view.SurfaceHolder;
+
+import java.io.File;
 
 /*
  * Controls process of previewing and recording video
  */
 
 public class VideoRecordingManager implements SurfaceHolder.Callback {
-	
+
+	private static final String TAG = VideoRecordingManager.class.getSimpleName();
+
 	private AdaptiveSurfaceView videoView;
 	private CameraManager cameraManager;
 	private MediaRecorderManager recorderManager;
 	private VideoRecordingHandler recordingHandler;
+	private Thread monitorThrd;
 	
 	public VideoRecordingManager(AdaptiveSurfaceView videoView, VideoRecordingHandler recordingHandler) {
 		this.videoView = videoView;
@@ -37,14 +43,55 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
 		this.recorderManager = new MediaRecorderManager();
 		this.recordingHandler = recordingHandler;
 	}
-	
-	public boolean startRecording(String fileName, Size videoSize) {
+
+	/**
+	 *
+	 * @param fileName
+	 * @param videoSize
+	 * @param fileSizeLimit maximum allowed file size in bytes. 0 means infinite.
+	 * @return
+	 */
+	public boolean startRecording(final String fileName, Size videoSize, final long fileSizeLimit) {
 		int degree = cameraManager.getCameraDisplayOrientation();
-		return recorderManager.startRecording(cameraManager.getCamera(), fileName, videoSize, degree);
+		boolean startted = recorderManager.startRecording(cameraManager.getCamera(), fileName, videoSize, degree);
+		if (startted) {
+			monitorThrd = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (!Thread.currentThread().isInterrupted()) {
+						try {
+							Thread.sleep(1000);
+						}
+						catch (InterruptedException e) {
+							break;
+						}
+
+						long fileSize = new File(fileName).length();
+						Log.i(TAG, "file size: " + fileName + " : " + fileSize);
+
+						if (fileSizeLimit > 0 && fileSizeLimit < fileSize) {
+							Log.i(TAG, "file size limitation reached, stop recording");
+							stopRecording(true);
+						}
+					}
+					monitorThrd = null;
+				}
+			});
+			monitorThrd.start();
+		}
+		return startted;
 	}
 	
-	public boolean stopRecording() {
-		return recorderManager.stopRecording();
+	public boolean stopRecording(boolean willNotifyHandler) {
+		boolean stopped = recorderManager.stopRecording();
+		if (stopped && monitorThrd != null && monitorThrd.isAlive()) {
+			monitorThrd.interrupt();
+			monitorThrd = null;
+		}
+		if (stopped && willNotifyHandler && recordingHandler != null) {
+			recordingHandler.onStoppedRecording();
+		}
+		return stopped;
 	}
 
 	public void setPreviewSize(Size videoSize) {

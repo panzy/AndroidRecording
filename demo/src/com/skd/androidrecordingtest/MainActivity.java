@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
 			}
 			case 1: {
 				Intent i = new Intent(MainActivity.this, VideoRecordingActivity.class)
+						.putExtra(VideoRecordingActivity.EXTRA_FILE_LIMIT, 1024 * 500)
 						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_WIDTH, 640)
 						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_HEIGHT, 320);
 				startActivity(i);

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Camera.Size;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.skd.androidrecording.video.VideoRecordingManager;
 import com.skd.androidrecordingtest.utils.NotificationUtils;
 import com.skd.androidrecordingtest.utils.StorageUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +76,7 @@ public class VideoRecordingActivity extends Activity {
 				@Override
 				public void run() {
 					updateUiStateForNotRecording();
+					setSuccessResult();
 				}
 			});
 		}
@@ -226,6 +229,11 @@ public class VideoRecordingActivity extends Activity {
 		}
 	}
 
+	private void setSuccessResult() {
+		Intent data = new Intent().setData(Uri.fromFile(new File(fileName)));
+		setResult(RESULT_OK, data);
+	}
+
 	private void switchCamera() {
 		recordingManager.getCameraManager().switchCamera();
 		updateVideoSizes();
@@ -234,6 +242,7 @@ public class VideoRecordingActivity extends Activity {
 	private void record() {
 		if (recordingManager.stopRecording(false)) {
 			updateUiStateForNotRecording();
+			setSuccessResult();
 		}
 		else {
 			startRecording();

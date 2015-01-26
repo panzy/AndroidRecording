@@ -2,7 +2,9 @@ package com.skd.androidrecordingtest;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -10,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
+
+	private static final int REQ_CAP_VIDEO = 123;
+	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +48,22 @@ public class MainActivity extends Activity {
 						.putExtra(VideoRecordingActivity.EXTRA_DURATION_LIMIT, 10)
 						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_WIDTH, 640)
 						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_HEIGHT, 320);
-				startActivity(i);
+				startActivityForResult(i, REQ_CAP_VIDEO);
 				break;
+			}
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == REQ_CAP_VIDEO) {
+			if (resultCode == RESULT_OK && data != null) {
+				Uri uri = data.getData();
+				if (uri != null) {
+					Log.i(TAG, "REQ_CAP_VIDEO result " + uri.toString());
+				}
 			}
 		}
 	}

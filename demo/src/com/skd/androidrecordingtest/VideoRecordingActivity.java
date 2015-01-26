@@ -27,6 +27,8 @@ public class VideoRecordingActivity extends Activity {
 	public static final String EXTRA_PREFERRED_HEIGHT = "preferred_height";
 	/** 输入参数：最大允许的文件尺寸（字节, Int） */
 	public static final String EXTRA_FILE_LIMIT = "file_limit";
+	/** 输入参数：最大允许视频长度（秒） */
+	public static final String EXTRA_DURATION_LIMIT = "duration_limit";
 
 	private static String fileName = null;
     
@@ -37,6 +39,7 @@ public class VideoRecordingActivity extends Activity {
 	private Size videoSize = null;
 	private int preferredWidth;
 	private int preferredHeight;
+	private int durationLimit = 0;
 	private int fileLimit = 0;
 	private ArrayList<Size> supportedSizes = new ArrayList<Size>();
 	private VideoRecordingManager recordingManager;
@@ -87,10 +90,13 @@ public class VideoRecordingActivity extends Activity {
 			preferredWidth = savedInstanceState.getInt(EXTRA_PREFERRED_WIDTH);
 			preferredHeight = savedInstanceState.getInt(EXTRA_PREFERRED_HEIGHT);
 			fileLimit = savedInstanceState.getInt(EXTRA_FILE_LIMIT);
-		} else if (getIntent() != null) {
-			preferredWidth = getIntent().getIntExtra(EXTRA_PREFERRED_WIDTH, 0);
-			preferredHeight = getIntent().getIntExtra(EXTRA_PREFERRED_HEIGHT, 0);
-			fileLimit = getIntent().getIntExtra(EXTRA_FILE_LIMIT, 0);
+			durationLimit = savedInstanceState.getInt(EXTRA_DURATION_LIMIT);
+		} else if (getIntent() != null && getIntent().getExtras() != null) {
+			Bundle bundle = getIntent().getExtras();
+			preferredWidth = bundle.getInt(EXTRA_PREFERRED_WIDTH);
+			preferredHeight = bundle.getInt(EXTRA_PREFERRED_HEIGHT);
+			fileLimit = bundle.getInt(EXTRA_FILE_LIMIT);
+			durationLimit = bundle.getInt(EXTRA_DURATION_LIMIT);
 		}
 		
 		AdaptiveSurfaceView videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
@@ -124,6 +130,16 @@ public class VideoRecordingActivity extends Activity {
 				play();
 			}
 		});
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		outState.putInt(EXTRA_PREFERRED_WIDTH, preferredWidth);
+		outState.putInt(EXTRA_PREFERRED_HEIGHT, preferredHeight);
+		outState.putInt(EXTRA_FILE_LIMIT, fileLimit);
+		outState.putInt(EXTRA_DURATION_LIMIT, durationLimit);
 	}
 	
 	@Override
@@ -209,7 +225,7 @@ public class VideoRecordingActivity extends Activity {
 	}
 
 	private void startRecording() {
-		if (recordingManager.startRecording(fileName, videoSize, fileLimit)) {
+		if (recordingManager.startRecording(fileName, videoSize, fileLimit, durationLimit)) {
 			updateUiStateForRecording();
 			return;
 		}

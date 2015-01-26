@@ -30,6 +30,8 @@ public class VideoRecordingActivity extends Activity {
 	public static final String EXTRA_FILE_LIMIT = "file_limit";
 	/** 输入参数：最大允许视频长度（秒） */
 	public static final String EXTRA_DURATION_LIMIT = "duration_limit";
+	/** 输入参数：是否隐藏视频尺寸选择控件？ */
+	public static final String EXTRA_HIDE_VIDEOSIZE_PICKER = "hide_videosize_picker";
 
 	private static String fileName = null;
     
@@ -42,6 +44,7 @@ public class VideoRecordingActivity extends Activity {
 	private int preferredHeight;
 	private int durationLimit = 0;
 	private int fileLimit = 0;
+	private boolean hideVideoSizePicker;
 	private ArrayList<Size> supportedSizes = new ArrayList<Size>();
 	private VideoRecordingManager recordingManager;
 	
@@ -96,12 +99,14 @@ public class VideoRecordingActivity extends Activity {
 			preferredHeight = savedInstanceState.getInt(EXTRA_PREFERRED_HEIGHT);
 			fileLimit = savedInstanceState.getInt(EXTRA_FILE_LIMIT);
 			durationLimit = savedInstanceState.getInt(EXTRA_DURATION_LIMIT);
+			hideVideoSizePicker = savedInstanceState.getBoolean(EXTRA_HIDE_VIDEOSIZE_PICKER);
 		} else if (getIntent() != null && getIntent().getExtras() != null) {
 			Bundle bundle = getIntent().getExtras();
 			preferredWidth = bundle.getInt(EXTRA_PREFERRED_WIDTH);
 			preferredHeight = bundle.getInt(EXTRA_PREFERRED_HEIGHT);
 			fileLimit = bundle.getInt(EXTRA_FILE_LIMIT);
 			durationLimit = bundle.getInt(EXTRA_DURATION_LIMIT);
+			hideVideoSizePicker = bundle.getBoolean(EXTRA_HIDE_VIDEOSIZE_PICKER);
 		}
 		
 		AdaptiveSurfaceView videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
@@ -135,6 +140,10 @@ public class VideoRecordingActivity extends Activity {
 				play();
 			}
 		});
+
+		if (hideVideoSizePicker) {
+			findViewById(R.id.videoSizeSpinner).setVisibility(View.GONE);
+		}
 	}
 
 	@Override
@@ -145,6 +154,7 @@ public class VideoRecordingActivity extends Activity {
 		outState.putInt(EXTRA_PREFERRED_HEIGHT, preferredHeight);
 		outState.putInt(EXTRA_FILE_LIMIT, fileLimit);
 		outState.putInt(EXTRA_DURATION_LIMIT, durationLimit);
+		outState.putBoolean(EXTRA_HIDE_VIDEOSIZE_PICKER, hideVideoSizePicker);
 	}
 	
 	@Override
@@ -169,7 +179,7 @@ public class VideoRecordingActivity extends Activity {
 					videoSize = (Size) arg0.getItemAtPosition(arg2);
 					recordingManager.setPreviewSize(videoSize);
 				}
-	
+
 				@Override
 				public void onNothingSelected(AdapterView<?> arg0) {}
 			});
@@ -212,6 +222,7 @@ public class VideoRecordingActivity extends Activity {
 
 			videoSize = supportedSizes.get(idx);
 			videoSizeSpinner.setSelection(idx);
+			recordingManager.setPreviewSize(videoSize);
 		}
 	}
 

@@ -77,6 +77,7 @@ public class VideoRecordingActivity extends Activity {
 				public void run() {
 					updateUiStateForNotRecording();
 					setSuccessResult();
+					addToMediaStore();
 				}
 			});
 		}
@@ -234,6 +235,10 @@ public class VideoRecordingActivity extends Activity {
 		setResult(RESULT_OK, data);
 	}
 
+	private void addToMediaStore() {
+		sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(fileName))));
+	}
+
 	private void switchCamera() {
 		recordingManager.getCameraManager().switchCamera();
 		updateVideoSizes();
@@ -243,6 +248,7 @@ public class VideoRecordingActivity extends Activity {
 		if (recordingManager.stopRecording(false)) {
 			updateUiStateForNotRecording();
 			setSuccessResult();
+			addToMediaStore();
 		}
 		else {
 			startRecording();

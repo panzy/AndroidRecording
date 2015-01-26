@@ -70,7 +70,7 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
 						}
 
 						long fileSize = new File(fileName).length();
-						Log.i(TAG, "file size: " + fileName + " : " + fileSize);
+						Log.i(TAG, "file size: " + fileSize);
 						if (fileSizeLimit > 0 && fileSizeLimit < fileSize) {
 							Log.i(TAG, "file size limitation reached, stop recording");
 							stopRecording(true);

@@ -16,11 +16,11 @@
 
 package com.skd.androidrecording.video;
 
-import java.io.IOException;
-
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.media.MediaRecorder;
+
+import java.io.IOException;
 
 /*
  * Manages media recorder recording 
@@ -48,9 +48,9 @@ public class MediaRecorderManager {
 			recorder.setOrientationHint(cameraRotationDegree);
 			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 			recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-			recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+			recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 			recorder.setVideoSize(sz.width, sz.height);
-			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 			recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
 			recorder.setOutputFile(fileName);
 			recorder.prepare();

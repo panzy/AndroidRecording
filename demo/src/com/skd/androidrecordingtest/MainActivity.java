@@ -37,7 +37,9 @@ public class MainActivity extends Activity {
 				break;
 			}
 			case 1: {
-				Intent i = new Intent(MainActivity.this, VideoRecordingActivity.class);
+				Intent i = new Intent(MainActivity.this, VideoRecordingActivity.class)
+						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_WIDTH, 640)
+						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_HEIGHT, 320);
 				startActivity(i);
 				break;
 			}

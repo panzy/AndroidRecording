@@ -34,9 +34,11 @@ public class VideoRecordingActivity extends Activity {
 	/** 输入参数：是否隐藏视频尺寸选择控件？ */
 	public static final String EXTRA_HIDE_VIDEOSIZE_PICKER = "hide_videosize_picker";
 
+	private static final int REQ_PREVIEW = 123;
+
 	private static String fileName = null;
     
-	private Button recordBtn, playBtn;
+	private Button recordBtn;
 	private ImageButton switchBtn;
 	private Spinner videoSizeSpinner;
 
@@ -75,8 +77,8 @@ public class VideoRecordingActivity extends Activity {
 				@Override
 				public void run() {
 					updateUiStateForNotRecording();
-					setSuccessResult();
 					addToMediaStore();
+					preview();
 				}
 			});
 		}
@@ -136,14 +138,6 @@ public class VideoRecordingActivity extends Activity {
 			switchBtn.setVisibility(View.GONE);
 		}
 		
-		playBtn = (Button) findViewById(R.id.playBtn);
-		playBtn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				play();
-			}
-		});
-
 		if (hideVideoSizePicker) {
 			findViewById(R.id.videoSizeSpinner).setVisibility(View.GONE);
 		}
@@ -167,7 +161,23 @@ public class VideoRecordingActivity extends Activity {
 		
 		super.onDestroy();
 	}
-	
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == REQ_PREVIEW) {
+			if (resultCode == RESULT_OK) {
+				setSuccessResult();
+				finish();
+			} else if (data == null) {
+				setResult(RESULT_CANCELED);
+				finish();
+			}
+			// else: retake
+		}
+	}
+
 	@SuppressLint("NewApi")
 	private void initVideoSizeSpinner() {
 		videoSizeSpinner = (Spinner) findViewById(R.id.videoSizeSpinner);
@@ -246,8 +256,8 @@ public class VideoRecordingActivity extends Activity {
 	private void record() {
 		if (recordingManager.stopRecording(false)) {
 			updateUiStateForNotRecording();
-			setSuccessResult();
 			addToMediaStore();
+			preview();
 		}
 		else {
 			startRecording();
@@ -264,21 +274,21 @@ public class VideoRecordingActivity extends Activity {
 
 	private void updateUiStateForNotRecording() {
 		recordBtn.setText(R.string.recordBtn);
-		switchBtn.setEnabled(true);
-		playBtn.setEnabled(true);
-		videoSizeSpinner.setEnabled(true);
+		switchBtn.setVisibility(View.VISIBLE);
+		if (!hideVideoSizePicker)
+			videoSizeSpinner.setVisibility(View.VISIBLE);
 	}
 
 	private void updateUiStateForRecording() {
 		recordBtn.setText(R.string.stopRecordBtn);
-		switchBtn.setEnabled(false);
-		playBtn.setEnabled(false);
-		videoSizeSpinner.setEnabled(false);
+		switchBtn.setVisibility(View.GONE);
+		if (!hideVideoSizePicker)
+			videoSizeSpinner.setVisibility(View.GONE);
 	}
 
-	private void play() {
+	private void preview() {
 		Intent i = new Intent(VideoRecordingActivity.this, VideoPlaybackActivity.class);
 		i.putExtra(VideoPlaybackActivity.FileNameArg, fileName);
-		startActivityForResult(i, 0);
+		startActivityForResult(i, REQ_PREVIEW);
 	}
 }

@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
 import com.skd.androidrecording.R;
 import com.skd.androidrecording.video.AdaptiveSurfaceView;
 import com.skd.androidrecording.video.PlaybackHandler;
 import com.skd.androidrecording.video.VideoPlaybackManager;
 
-public class VideoPlaybackActivity extends Activity {
+public class VideoPlaybackActivity extends Activity implements View.OnClickListener {
 	public static String FileNameArg = "arg_filename";
 	
 	private static String fileName = null;
@@ -43,6 +44,10 @@ public class VideoPlaybackActivity extends Activity {
 		
 		playbackManager = new VideoPlaybackManager(this, videoView, playbackHandler);
 		playbackManager.setupPlayback(fileName);
+
+		findViewById(R.id.acceptBtn).setOnClickListener(this);
+		findViewById(R.id.discardBtn).setOnClickListener(this);
+		findViewById(R.id.retakeBtn).setOnClickListener(this);
 	}
 	
 	@Override
@@ -54,16 +59,31 @@ public class VideoPlaybackActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
+
 		playbackManager.pause();
 		playbackManager.hideMediaController();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		playbackManager.dispose();
 		playbackHandler = null;
 		
 		super.onDestroy();
+	}
+
+	@Override
+	public void onClick(View view) {
+		int i = view.getId();
+		if (i == R.id.acceptBtn) {
+			setResult(RESULT_OK);
+			onBackPressed();
+		} else if (i == R.id.discardBtn) {
+			setResult(RESULT_CANCELED);
+			onBackPressed();
+		} else if (i == R.id.retakeBtn) {
+			setResult(RESULT_CANCELED, new Intent());
+			onBackPressed();
+		}
 	}
 }

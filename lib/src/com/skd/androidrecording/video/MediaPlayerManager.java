@@ -25,6 +25,7 @@ import android.view.SurfaceHolder;
 
 public class MediaPlayerManager {
 
+	private static final String TAG = MediaPlayerManager.class.getSimpleName();
 	private MediaPlayer player;
 	
 	public MediaPlayerManager() {
@@ -45,7 +46,8 @@ public class MediaPlayerManager {
 	}
 	
 	public void setDisplay(SurfaceHolder sf) {
-		player.setDisplay(sf);
+		if (player != null)
+			player.setDisplay(sf);
 	}
 	
 	public void startPlaying() {
@@ -53,7 +55,9 @@ public class MediaPlayerManager {
     }
 	
 	public void pausePlaying() {
-		player.pause();
+		if (player.isPlaying()) {
+			player.pause();
+		}
     }
 
 	public void seekTo(int pos) {

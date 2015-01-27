@@ -8,4 +8,7 @@
 	<string name="recordingError">Error recording audio</string>
 	<string name="saveRecordError">Error saving audio record</string>
 	<string name="videoRecordingError">Recording video failed</string>
+	<string name="discardBtn">Discard</string>
+	<string name="acceptBtn">Accept</string>
+	<string name="retakeBtn">Retake</string>
 </resources>

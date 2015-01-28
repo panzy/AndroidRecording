@@ -37,7 +37,8 @@ public class VideoRecordingActivity extends Activity {
 	private static final int REQ_PREVIEW = 123;
 
 	private static String fileName = null;
-    
+
+	private AdaptiveSurfaceView videoView;
 	private ImageButton recordBtn;
 	private ImageButton switchBtn;
 	private Spinner videoSizeSpinner;
@@ -83,7 +84,7 @@ public class VideoRecordingActivity extends Activity {
 			});
 		}
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -114,7 +115,7 @@ public class VideoRecordingActivity extends Activity {
 			hideVideoSizePicker = bundle.getBoolean(EXTRA_HIDE_VIDEOSIZE_PICKER);
 		}
 		
-		AdaptiveSurfaceView videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
+		videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
 		recordingManager = new VideoRecordingManager(videoView, recordingHandler);
 		
 		recordBtn = (ImageButton) findViewById(R.id.recordBtn);
@@ -211,7 +212,6 @@ public class VideoRecordingActivity extends Activity {
 			supportedSizes.addAll(sizes);
 			((SizeAdapter) videoSizeSpinner.getAdapter()).set(sizes);
 			pickPreferredSize();
-			recordingManager.setPreviewSize(videoSize);
 		}
 	}
 
@@ -251,6 +251,8 @@ public class VideoRecordingActivity extends Activity {
 	private void switchCamera() {
 		recordingManager.getCameraManager().switchCamera();
 		updateVideoSizes();
+		recordingManager.getCameraManager().setupCameraAndStartPreview(videoView.getHolder(),
+				recordingHandler.getVideoSize(), recordingHandler.getDisplayRotation());
 	}
 	
 	private void record() {

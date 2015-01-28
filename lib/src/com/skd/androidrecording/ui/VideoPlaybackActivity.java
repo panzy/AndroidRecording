@@ -25,6 +25,7 @@ public class VideoPlaybackActivity extends Activity implements View.OnClickListe
 			runOnUiThread (new Runnable() {
 		    	public void run() {
 		    		playbackManager.showMediaController();
+					playbackManager.start();
 		    	}
 		    });
 		}

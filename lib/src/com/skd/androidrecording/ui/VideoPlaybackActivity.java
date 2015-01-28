@@ -42,7 +42,7 @@ public class VideoPlaybackActivity extends Activity implements View.OnClickListe
 		
 		videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
 		
-		playbackManager = new VideoPlaybackManager(this, videoView, playbackHandler);
+		playbackManager = new VideoPlaybackManager(this, videoView, findViewById(R.id.mediaControllerAnchor), playbackHandler);
 		playbackManager.setupPlayback(fileName);
 
 		findViewById(R.id.acceptBtn).setOnClickListener(this);

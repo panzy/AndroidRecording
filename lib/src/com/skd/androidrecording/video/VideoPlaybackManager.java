@@ -21,6 +21,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.widget.MediaController;
 import android.widget.MediaController.MediaPlayerControl;
 
@@ -34,7 +35,8 @@ public class VideoPlaybackManager implements SurfaceHolder.Callback, OnPreparedL
 	private PlaybackHandler playbackHandler;
 	private boolean isPlayerPrepared, isSurfaceCreated;
 	
-	public VideoPlaybackManager(Context ctx, AdaptiveSurfaceView videoView, PlaybackHandler playbackHandler) {
+	public VideoPlaybackManager(Context ctx, AdaptiveSurfaceView videoView, View mediaControllerAnchor,
+								PlaybackHandler playbackHandler) {
 		videoView.getHolder().addCallback(this);
 		
 		this.playerManager = new MediaPlayerManager();
@@ -43,7 +45,7 @@ public class VideoPlaybackManager implements SurfaceHolder.Callback, OnPreparedL
 	    
 		this.controller = new MediaController(ctx);
         this.controller.setMediaPlayer(this);
-        this.controller.setAnchorView(videoView);
+        this.controller.setAnchorView(mediaControllerAnchor != null ? mediaControllerAnchor : videoView);
         
 	    this.playbackHandler = playbackHandler;
 	}

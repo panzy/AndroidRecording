@@ -38,7 +38,7 @@ public class VideoRecordingActivity extends Activity {
 
 	private static String fileName = null;
     
-	private Button recordBtn;
+	private ImageButton recordBtn;
 	private ImageButton switchBtn;
 	private Spinner videoSizeSpinner;
 
@@ -117,7 +117,7 @@ public class VideoRecordingActivity extends Activity {
 		AdaptiveSurfaceView videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
 		recordingManager = new VideoRecordingManager(videoView, recordingHandler);
 		
-		recordBtn = (Button) findViewById(R.id.recordBtn);
+		recordBtn = (ImageButton) findViewById(R.id.recordBtn);
 		recordBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -273,14 +273,14 @@ public class VideoRecordingActivity extends Activity {
 	}
 
 	private void updateUiStateForNotRecording() {
-		recordBtn.setText(R.string.recordBtn);
+		recordBtn.setImageResource(R.drawable.btn_record_video_start);
 		switchBtn.setVisibility(View.VISIBLE);
 		if (!hideVideoSizePicker)
 			videoSizeSpinner.setVisibility(View.VISIBLE);
 	}
 
 	private void updateUiStateForRecording() {
-		recordBtn.setText(R.string.stopRecordBtn);
+		recordBtn.setImageResource(R.drawable.btn_record_video_stop);
 		switchBtn.setVisibility(View.GONE);
 		if (!hideVideoSizePicker)
 			videoSizeSpinner.setVisibility(View.GONE);

@@ -16,12 +16,13 @@
 
 package com.skd.androidrecording.video;
 
-import java.io.IOException;
-
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.os.Build;
 import android.view.SurfaceHolder;
+
+import java.io.IOException;
 
 /*
  * Manages camera preview
@@ -68,6 +69,8 @@ public class CameraManager {
 		
 		Parameters param = camera.getParameters();
 		param.setPreviewSize(sz.width, sz.height);
+        if (Build.VERSION.SDK_INT >= 14)
+            param.setRecordingHint(true);
 		camera.setParameters(param);
 		
 		if (setDisplay(sf)) {

@@ -23,4 +23,11 @@ public interface VideoRecordingHandler {
 	public Size getVideoSize();
 	public int getDisplayRotation();
 	public void onStoppedRecording();
+
+	/**
+	 * Report video duration and file size.
+	 * @param duration Duration in sec.
+	 * @param fileSize File size in bytes.
+	 */
+	public void onRecordingProgress(int duration, int fileSize);
 }

@@ -42,6 +42,8 @@ public class VideoRecordingActivity extends Activity {
 	private ImageButton recordBtn;
 	private ImageButton switchBtn;
 	private Spinner videoSizeSpinner;
+	private TextView durationText;
+	private TextView fileSizeText;
 
 	private Size videoSize = null;
 	private int preferredWidth;
@@ -83,6 +85,46 @@ public class VideoRecordingActivity extends Activity {
 				}
 			});
 		}
+
+		@Override
+		public void onRecordingProgress(final int duration, final int fileSize) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (durationLimit <= 0)
+						durationText.setText(formatDuration(duration));
+					else
+						durationText.setText(formatDuration(duration) + "/" + formatDuration(durationLimit));
+
+					if (fileLimit <= 0)
+						fileSizeText.setText(formatFileSize(fileSize));
+					else
+						fileSizeText.setText(formatFileSize(fileSize) + "/" + formatFileSize(fileLimit));
+				}
+			});
+		}
+
+		/**
+		 * @param duration in sec.
+		 * @return
+		 */
+		private String formatDuration(int duration) {
+			return String.format("%02d:%02d", duration / 60, (duration % 60));
+		}
+
+		/**
+		 * @param size in bytes.
+		 * @return
+		 */
+		private String formatFileSize(int size) {
+			if (size >= 1024 * 1024) {
+				return String.format("%.1fMB", (float) size / 1024 / 1024);
+			} else if (size >= 1024) {
+				return String.format("%dKB", size / 1024);
+			} else {
+				return String.format("%dB", size);
+			}
+		}
 	};
 
 	@Override
@@ -117,7 +159,13 @@ public class VideoRecordingActivity extends Activity {
 		
 		videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);
 		recordingManager = new VideoRecordingManager(videoView, recordingHandler);
-		
+
+		durationText = (TextView) findViewById(R.id.durationText);
+		durationText.setVisibility(View.INVISIBLE);
+
+		fileSizeText = (TextView) findViewById(R.id.fileSizeText);
+		fileSizeText.setVisibility(View.INVISIBLE);
+
 		recordBtn = (ImageButton) findViewById(R.id.recordBtn);
 		recordBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -279,6 +327,8 @@ public class VideoRecordingActivity extends Activity {
 		switchBtn.setVisibility(View.VISIBLE);
 		if (!hideVideoSizePicker)
 			videoSizeSpinner.setVisibility(View.VISIBLE);
+		durationText.setVisibility(View.INVISIBLE);
+		fileSizeText.setVisibility(View.INVISIBLE);
 	}
 
 	private void updateUiStateForRecording() {
@@ -286,6 +336,8 @@ public class VideoRecordingActivity extends Activity {
 		switchBtn.setVisibility(View.GONE);
 		if (!hideVideoSizePicker)
 			videoSizeSpinner.setVisibility(View.GONE);
+		durationText.setVisibility(View.VISIBLE);
+		fileSizeText.setVisibility(View.VISIBLE);
 	}
 
 	private void preview() {

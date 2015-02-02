@@ -45,7 +45,7 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
 	}
 
 	/**
-	 *
+	 * may block a while.
 	 * @param fileName
 	 * @param videoSize
 	 * @param fileSizeLimit maximum allowed file size in bytes. 0 means infinite.

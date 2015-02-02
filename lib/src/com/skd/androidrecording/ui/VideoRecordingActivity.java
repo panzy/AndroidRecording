@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Camera.Size;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -53,7 +54,7 @@ public class VideoRecordingActivity extends Activity {
 	private boolean hideVideoSizePicker;
 	private ArrayList<Size> supportedSizes = new ArrayList<Size>();
 	private VideoRecordingManager recordingManager;
-	
+
 	private VideoRecordingHandler recordingHandler = new VideoRecordingHandler() {
 		@Override
 		public boolean onPrepareRecording() {
@@ -302,7 +303,7 @@ public class VideoRecordingActivity extends Activity {
 		recordingManager.getCameraManager().setupCameraAndStartPreview(videoView.getHolder(),
 				recordingHandler.getVideoSize(), recordingHandler.getDisplayRotation());
 	}
-	
+
 	private void record() {
 		if (recordingManager.stopRecording(false)) {
 			updateUiStateForNotRecording();
@@ -314,11 +315,28 @@ public class VideoRecordingActivity extends Activity {
 	}
 
 	private void startRecording() {
-		if (recordingManager.startRecording(fileName, videoSize, fileLimit, durationLimit)) {
-			updateUiStateForRecording();
-			return;
-		}
-		Toast.makeText(this, getString(R.string.videoRecordingError), Toast.LENGTH_LONG).show();
+		new AsyncTask<Void, Void, Boolean>() {
+			@Override
+			protected void onPreExecute() {
+				// temporarily disable button to avoid MediaRecorder RuntimeException
+				recordBtn.setEnabled(false);
+			}
+
+			@Override
+			protected Boolean doInBackground(Void... voids) {
+				return recordingManager.startRecording(fileName, videoSize, fileLimit, durationLimit);
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				recordBtn.setEnabled(true);
+				if (result)
+					updateUiStateForRecording();
+				else
+					Toast.makeText(VideoRecordingActivity.this,
+							getString(R.string.videoRecordingError), Toast.LENGTH_LONG).show();
+			}
+		}.execute();
 	}
 
 	private void updateUiStateForNotRecording() {

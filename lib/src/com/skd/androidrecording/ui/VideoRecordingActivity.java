@@ -308,8 +308,7 @@ public class VideoRecordingActivity extends Activity {
 			updateUiStateForNotRecording();
 			addToMediaStore();
 			preview();
-		}
-		else {
+		} else {
 			startRecording();
 		}
 	}

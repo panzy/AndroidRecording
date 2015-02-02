@@ -60,6 +60,8 @@ public class MediaRecorderManager {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (RuntimeException e) {
+			e.printStackTrace();
 		}
 
 		return isRecording;

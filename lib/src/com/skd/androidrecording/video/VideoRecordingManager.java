@@ -57,7 +57,8 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
 		int degree = cameraManager.getCameraDisplayOrientation();
 		boolean startted = recorderManager.startRecording(cameraManager.getCamera(), fileName, videoSize, degree);
 		if (startted) {
-			recordingHandler.onRecordingProgress(0, 0);
+			if (recordingHandler != null)
+				recordingHandler.onRecordingProgress(0, 0);
 			monitorThrd = new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -85,7 +86,8 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
 							stopRecording(true);
 						}
 
-						recordingHandler.onRecordingProgress(durationMs / 1000, (int) fileSize);
+						if (recordingHandler != null)
+							recordingHandler.onRecordingProgress(durationMs / 1000, (int) fileSize);
 					}
 					monitorThrd = null;
 				}
@@ -96,7 +98,13 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
 	}
 	
 	public boolean stopRecording(boolean willNotifyHandler) {
-		boolean stopped = recorderManager.stopRecording();
+		boolean stopped;
+		try {
+			stopped = recorderManager.stopRecording();
+		} catch (RuntimeException e) {
+			stopped = true;
+			e.printStackTrace();
+		}
 		if (stopped && monitorThrd != null && monitorThrd.isAlive()) {
 			monitorThrd.interrupt();
 			monitorThrd = null;

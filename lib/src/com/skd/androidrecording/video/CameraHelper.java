@@ -23,6 +23,8 @@ import android.hardware.Camera.Size;
 import android.os.Build;
 import android.view.Surface;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /*
@@ -63,7 +65,29 @@ public class CameraHelper {
 			} else {
 				// Video sizes may be null, which indicates that all the supported
 				// preview sizes are supported for video recording.
-				return camera.getParameters().getSupportedPreviewSizes();
+				HashSet<String> allSizesLiteral = new HashSet<>();
+				for (Camera.Size sz : camera.getParameters().getSupportedPreviewSizes()) {
+					allSizesLiteral.add(String.format("%dx%d", sz.width, sz.height));
+				}
+
+				// on Samsung Galaxy 3, the supported preview sizes are too many,
+				// but it seems that not all of them can be used as recording video size.
+				// the following set are used by the built-in camera app.
+				Camera.Size[] preferredSizes = {
+						camera.new Size(1920, 1080),
+						camera.new Size(1280, 720),
+						camera.new Size(720, 480),
+						camera.new Size(640, 480),
+						camera.new Size(320, 240)
+				};
+
+				List<Size> result = new ArrayList<>(preferredSizes.length);
+				for (Camera.Size sz : preferredSizes) {
+					if (allSizesLiteral.contains(String.format("%dx%d", sz.width, sz.height)))
+						result.add(sz);
+				}
+
+				return result;
 			}
 		}
 		else {

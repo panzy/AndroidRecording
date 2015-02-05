@@ -52,6 +52,9 @@ public class MediaRecorderManager {
 			recorder.setVideoSize(sz.width, sz.height);
 			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 			recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+			// setProfile() causes
+			// IllegalStateException setOutputFormat called in an invalid state: 4
+//			recorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_720P));
 			recorder.setOutputFile(fileName);
 			recorder.prepare();
 			recorder.start();

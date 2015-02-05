@@ -132,6 +132,13 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
     	cameraManager.releaseCamera();
     	recorderManager.releaseRecorder();
     	recordingHandler = null;
+
+		// stopRecording() may stuck forever on MediaRecorder.stop(),
+		// thus the monitor thread is not stopped.
+		if (monitorThrd != null && monitorThrd.isAlive()) {
+			monitorThrd.interrupt();
+			monitorThrd = null;
+		}
     }
     
     //surface holder callbacks ******************************************************************

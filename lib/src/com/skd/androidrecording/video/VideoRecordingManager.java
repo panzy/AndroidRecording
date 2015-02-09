@@ -151,12 +151,8 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
     
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		if (recordingHandler == null) { return; }
-		if (!recordingHandler.onPrepareRecording()) {
-			cameraManager.setupCameraAndStartPreview(videoView.getHolder(),
-												     recordingHandler.getVideoSize(),
-												     recordingHandler.getDisplayRotation());
-		}
+		if (recordingHandler != null)
+			recordingHandler.onPrepareRecording();
 	}
 	
 	@Override

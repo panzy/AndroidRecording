@@ -48,8 +48,8 @@ public class MainActivity extends Activity {
 						.putExtra(VideoRecordingActivity.EXTRA_HIDE_VIDEOSIZE_PICKER, false)
 						.putExtra(VideoRecordingActivity.EXTRA_FILE_LIMIT, 1024 * 1024 * 2)
 						.putExtra(VideoRecordingActivity.EXTRA_DURATION_LIMIT, 10)
-						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_WIDTH, 720)
-						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_HEIGHT, 480);
+						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_WIDTH, 1280)
+						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_HEIGHT, 720);
 				startActivityForResult(i, REQ_CAP_VIDEO);
 				break;
 			}

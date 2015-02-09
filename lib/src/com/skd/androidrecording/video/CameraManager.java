@@ -19,6 +19,7 @@ package com.skd.androidrecording.video;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.media.CamcorderProfile;
 import android.os.Build;
 import android.view.SurfaceHolder;
 
@@ -35,6 +36,7 @@ public class CameraManager {
 	private int defaultCameraID;
 	private int cameraRotationDegree;
 	private boolean isPreviewStarted = false;
+	private CamcorderProfile profile;
 	
 	public CameraManager() {
 		camerasCount = CameraHelper.getAvailableCamerasCount();
@@ -67,6 +69,8 @@ public class CameraManager {
 		
 		cameraRotationDegree = CameraHelper.setCameraDisplayOrientation(defaultCameraID, camera, displayRotation);
 
+		chooseCamcorderProfile(sz);
+
 		Parameters param = camera.getParameters();
 
 		// samsung hack
@@ -78,7 +82,7 @@ public class CameraManager {
 			param.set("cam_mode", 1);
 
 		param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-		param.setPreviewSize(sz.width, sz.height);
+		param.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
         if (Build.VERSION.SDK_INT >= 14)
             param.setRecordingHint(true);
 		camera.setParameters(param);
@@ -87,7 +91,29 @@ public class CameraManager {
 			startCameraPreview();
 		}	
 	}
-	
+
+	private void chooseCamcorderProfile(Size sizeHint) {
+		// For android 2.3 devices video quality = low
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+			profile = (CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
+		else {
+			// For >= Android 3.0 devices select 720p, 480p or low quality of video
+			if (CamcorderProfile.hasProfile(getCameraID(), CamcorderProfile.QUALITY_720P)
+					&& (sizeHint == null || sizeHint.height >= 720)) {
+				profile = (CamcorderProfile.get(CamcorderProfile.QUALITY_720P));
+				return;
+			}
+
+			if (CamcorderProfile.hasProfile(getCameraID(), CamcorderProfile.QUALITY_480P)
+					&& (sizeHint == null || sizeHint.height >= 480)) {
+				profile = (CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+				return;
+			}
+
+			profile = (CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
+		}
+	}
+
 	public boolean setDisplay(SurfaceHolder sf) {
 		try {
 			camera.setPreviewDisplay(sf);
@@ -113,7 +139,11 @@ public class CameraManager {
 	public Camera getCamera() {
 		return camera;
 	}
-	
+
+	public CamcorderProfile getProfile() {
+		return profile;
+	}
+
 	public int getCameraDisplayOrientation() {
 		return (CameraHelper.isCameraFacingBack(defaultCameraID)) ? cameraRotationDegree : cameraRotationDegree + 180;
 	}
@@ -124,5 +154,9 @@ public class CameraManager {
 
 	public boolean isPreviewStarted() {
 		return isPreviewStarted;
+	}
+
+	public int getCameraID() {
+		return defaultCameraID;
 	}
 }

@@ -17,8 +17,9 @@
 package com.skd.androidrecording.video;
 
 import android.hardware.Camera;
-import android.hardware.Camera.Size;
+import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -27,9 +28,7 @@ import java.io.IOException;
  */
 
 public class MediaRecorderManager {
-	private static final int VIDEO_W_DEFAULT = 800;
-	private static final int VIDEO_H_DEFAULT = 480;
-	
+	private static final String TAG = "MediaRecorderManager ";
 	private MediaRecorder recorder;
 	private boolean isRecording;
 
@@ -37,34 +36,29 @@ public class MediaRecorderManager {
 		recorder = new MediaRecorder();
 	}
 
-	public boolean startRecording(Camera camera, String fileName, Size sz, int cameraRotationDegree) {
-		if (sz == null) {
-			sz = camera.new Size(VIDEO_W_DEFAULT, VIDEO_H_DEFAULT);
-		}
-		
+	public boolean startRecording(Camera camera, CamcorderProfile profile, String fileName, int cameraRotationDegree) {
+		Log.i(TAG, String.format("start recording %dx%d -> %s",
+				profile.videoFrameWidth, profile.videoFrameHeight, fileName));
 		try {
 			camera.unlock();
 			recorder.setCamera(camera);
 			recorder.setOrientationHint(cameraRotationDegree);
-			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 			recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-			recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-			recorder.setVideoSize(sz.width, sz.height);
-			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-			recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
-			// setProfile() causes
-			// IllegalStateException setOutputFormat called in an invalid state: 4
-//			recorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_720P));
+			recorder.setProfile(profile);
 			recorder.setOutputFile(fileName);
 			recorder.prepare();
 			recorder.start();
 			isRecording = true;
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
+			releaseRecorder();
 		} catch (IOException e) {
 			e.printStackTrace();
+			releaseRecorder();
 		} catch (RuntimeException e) {
 			e.printStackTrace();
+			releaseRecorder();
 		}
 
 		return isRecording;

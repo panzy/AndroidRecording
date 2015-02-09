@@ -47,15 +47,16 @@ public class VideoRecordingManager implements SurfaceHolder.Callback {
 	/**
 	 * may block a while.
 	 * @param fileName
-	 * @param videoSize
 	 * @param fileSizeLimit maximum allowed file size in bytes. 0 means infinite.
 	 * @param durationLimit maximum duration in seconds, 0 means infinite.
 	 * @return
 	 */
-	public boolean startRecording(final String fileName, Size videoSize,
+	public boolean startRecording(final String fileName,
 								  final long fileSizeLimit, final int durationLimit) {
 		int degree = cameraManager.getCameraDisplayOrientation();
-		boolean startted = recorderManager.startRecording(cameraManager.getCamera(), fileName, videoSize, degree);
+		boolean startted = recorderManager.startRecording(
+				cameraManager.getCamera(),
+				cameraManager.getProfile(), fileName, degree);
 		if (startted) {
 			if (recordingHandler != null)
 				recordingHandler.onRecordingProgress(0, 0);

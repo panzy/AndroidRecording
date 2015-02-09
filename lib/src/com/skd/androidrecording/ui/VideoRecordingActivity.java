@@ -324,7 +324,7 @@ public class VideoRecordingActivity extends Activity {
 
 			@Override
 			protected Boolean doInBackground(Void... voids) {
-				return recordingManager.startRecording(fileName, videoSize, fileLimit, durationLimit);
+				return recordingManager.startRecording(fileName, fileLimit, durationLimit);
 			}
 
 			@Override

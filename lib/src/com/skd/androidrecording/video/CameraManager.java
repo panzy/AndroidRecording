@@ -73,14 +73,6 @@ public class CameraManager {
 
 		Parameters param = camera.getParameters();
 
-		// samsung hack
-		// http://stackoverflow.com/questions/7225571/camcorderprofile-quality-high-resolution-produces-green-flickering-video
-		//
-		// XXX still not work on samsung galaxy 3 with video size = 1280x720,
-		// seems no video data is got by MediaRecorder.
-		if (sz.height >= 720)
-			param.set("cam_mode", 1);
-
 		param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
 		param.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
         if (Build.VERSION.SDK_INT >= 14)

@@ -282,8 +282,12 @@ public class VideoRecordingActivity extends Activity {
 				}
 			}
 
-			videoSize = supportedSizes.get(idx);
-			videoSizeSpinner.setSelection(idx);
+			if (hideVideoSizePicker) {
+				videoSize = supportedSizes.get(idx);
+				startPreview();
+			} else {
+				videoSizeSpinner.setSelection(idx);
+			}
 		}
 	}
 

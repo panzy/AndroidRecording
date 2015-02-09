@@ -20,6 +20,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.os.Build;
 import android.view.SurfaceHolder;
 
@@ -70,6 +71,12 @@ public class CameraManager {
 		cameraRotationDegree = CameraHelper.setCameraDisplayOrientation(defaultCameraID, camera, displayRotation);
 
 		chooseCamcorderProfile(sz);
+
+		// tweak profile
+		profile.fileFormat = MediaRecorder.OutputFormat.THREE_GPP;
+		profile.audioSampleRate = 16000;
+		profile.audioChannels = 1;
+		profile.audioBitRate = 96000;
 
 		Parameters param = camera.getParameters();
 

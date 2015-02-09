@@ -240,14 +240,7 @@ public class VideoRecordingActivity extends Activity {
 				@Override
 				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 					videoSize = (Size) arg0.getItemAtPosition(arg2);
-					recordingManager.setPreviewSize(videoSize);
-					if (recordingHandler != null && !recordingHandler.onPrepareRecording())
-					{
-						recordingManager.getCameraManager().setupCameraAndStartPreview(
-								videoView.getHolder(),
-								recordingHandler.getVideoSize(),
-								recordingHandler.getDisplayRotation());
-					}
+					startPreview();
 				}
 
 				@Override
@@ -259,7 +252,7 @@ public class VideoRecordingActivity extends Activity {
 			videoSizeSpinner.setVisibility(View.GONE);
 		}
 	}
-	
+
 	@SuppressLint("NewApi")
 	private void updateVideoSizes() {
 		if (Build.VERSION.SDK_INT >= 11) {
@@ -291,7 +284,6 @@ public class VideoRecordingActivity extends Activity {
 
 			videoSize = supportedSizes.get(idx);
 			videoSizeSpinner.setSelection(idx);
-			recordingManager.setPreviewSize(videoSize);
 		}
 	}
 
@@ -318,6 +310,17 @@ public class VideoRecordingActivity extends Activity {
 			preview();
 		} else {
 			startRecording();
+		}
+	}
+
+	private void startPreview() {
+		recordingManager.setPreviewSize(videoSize);
+		if (recordingHandler != null && !recordingHandler.onPrepareRecording())
+		{
+			recordingManager.getCameraManager().setupCameraAndStartPreview(
+					videoView.getHolder(),
+					recordingHandler.getVideoSize(),
+					recordingHandler.getDisplayRotation());
 		}
 	}
 

@@ -52,17 +52,22 @@ public class VideoRecordingActivity extends Activity {
 	private int durationLimit = 0;
 	private int fileLimit = 0;
 	private boolean hideVideoSizePicker;
-	private ArrayList<Size> supportedSizes = new ArrayList<Size>();
+	private ArrayList<Size> supportedSizes = new ArrayList<>();
 	private VideoRecordingManager recordingManager;
+	private boolean previewStarted;
 
 	private VideoRecordingHandler recordingHandler = new VideoRecordingHandler() {
 		@Override
 		public boolean onPrepareRecording() {
-			if (videoSizeSpinner == null) {
-	    		initVideoSizeSpinner();
-	    		return true;
+			if (supportedSizes.isEmpty()) {
+	    		loadVideoSizes();
 			}
-			return false;
+
+			if (!previewStarted) {
+				previewStarted = restartPreview(pickPreferredSize());
+			}
+
+			return true;
 		}
 		
 		@Override
@@ -194,6 +199,12 @@ public class VideoRecordingActivity extends Activity {
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+		previewStarted = false;
+	}
+
+	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
@@ -229,7 +240,7 @@ public class VideoRecordingActivity extends Activity {
 	}
 
 	@SuppressLint("NewApi")
-	private void initVideoSizeSpinner() {
+	private void loadVideoSizes() {
 		videoSizeSpinner = (Spinner) findViewById(R.id.videoSizeSpinner);
 		if (Build.VERSION.SDK_INT >= 11) {
 			List<Size> sizes = CameraHelper.getCameraSupportedVideoSizes(recordingManager.getCameraManager().getCamera());
@@ -239,21 +250,20 @@ public class VideoRecordingActivity extends Activity {
 			videoSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 				@Override
 				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-					videoSize = (Size) arg0.getItemAtPosition(arg2);
-					startPreview();
+					restartPreview((Size) arg0.getItemAtPosition(arg2));
 				}
 
 				@Override
-				public void onNothingSelected(AdapterView<?> arg0) {}
+				public void onNothingSelected(AdapterView<?> arg0) {
+				}
 			});
-			pickPreferredSize();
 		}
 		else {
 			videoSizeSpinner.setVisibility(View.GONE);
 		}
 	}
 
-	private void pickPreferredSize() {
+	private Size pickPreferredSize() {
 		if (supportedSizes != null && supportedSizes.size() > 0) {
 			int idx = 0;
 
@@ -271,13 +281,20 @@ public class VideoRecordingActivity extends Activity {
 				}
 			}
 
-			if (hideVideoSizePicker) {
-				videoSize = supportedSizes.get(idx);
-				startPreview();
-			} else {
+			if (!hideVideoSizePicker) {
+				// suspend listener
+				OnItemSelectedListener l = videoSizeSpinner.getOnItemSelectedListener();
+				videoSizeSpinner.setOnItemSelectedListener(null);
+				// set selection
 				videoSizeSpinner.setSelection(idx);
+				// restore listener
+				videoSizeSpinner.setOnItemSelectedListener(l);
 			}
+
+			return supportedSizes.get(idx);
 		}
+
+		return null;
 	}
 
 	private void setSuccessResult() {
@@ -291,7 +308,8 @@ public class VideoRecordingActivity extends Activity {
 
 	private void switchCamera() {
 		recordingManager.getCameraManager().switchCamera();
-		initVideoSizeSpinner();
+		loadVideoSizes();
+		restartPreview(pickPreferredSize());
 	}
 
 	private void record() {
@@ -304,15 +322,19 @@ public class VideoRecordingActivity extends Activity {
 		}
 	}
 
-	private void startPreview() {
-		recordingManager.setPreviewSize(videoSize);
-		if (recordingHandler != null && !recordingHandler.onPrepareRecording())
-		{
-			recordingManager.getCameraManager().setupCameraAndStartPreview(
-					videoView.getHolder(),
-					recordingHandler.getVideoSize(),
-					recordingHandler.getDisplayRotation());
+	private boolean restartPreview(Size videoSize) {
+		if (videoSize == null) {
+			Toast.makeText(this, "Failed to get camera video size", Toast.LENGTH_LONG).show();
+			return false;
 		}
+
+		this.videoSize = videoSize;
+		recordingManager.setPreviewSize(this.videoSize);
+		recordingManager.getCameraManager().setupCameraAndStartPreview(
+				videoView.getHolder(),
+				recordingHandler.getVideoSize(),
+				recordingHandler.getDisplayRotation());
+		return recordingManager.getCameraManager().isPreviewStarted();
 	}
 
 	private void startRecording() {

@@ -52,13 +52,10 @@ public class MediaRecorderManager {
 			isRecording = true;
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
-			releaseRecorder();
 		} catch (IOException e) {
 			e.printStackTrace();
-			releaseRecorder();
 		} catch (RuntimeException e) {
 			e.printStackTrace();
-			releaseRecorder();
 		}
 
 		return isRecording;

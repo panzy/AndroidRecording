@@ -253,17 +253,6 @@ public class VideoRecordingActivity extends Activity {
 		}
 	}
 
-	@SuppressLint("NewApi")
-	private void updateVideoSizes() {
-		if (Build.VERSION.SDK_INT >= 11) {
-			List<Size> sizes = CameraHelper.getCameraSupportedVideoSizes(recordingManager.getCameraManager().getCamera());
-			supportedSizes.clear();
-			supportedSizes.addAll(sizes);
-			((SizeAdapter) videoSizeSpinner.getAdapter()).set(sizes);
-			pickPreferredSize();
-		}
-	}
-
 	private void pickPreferredSize() {
 		if (supportedSizes != null && supportedSizes.size() > 0) {
 			int idx = 0;
@@ -302,9 +291,7 @@ public class VideoRecordingActivity extends Activity {
 
 	private void switchCamera() {
 		recordingManager.getCameraManager().switchCamera();
-		updateVideoSizes();
-		recordingManager.getCameraManager().setupCameraAndStartPreview(videoView.getHolder(),
-				recordingHandler.getVideoSize(), recordingHandler.getDisplayRotation());
+		initVideoSizeSpinner();
 	}
 
 	private void record() {

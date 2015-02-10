@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -242,25 +241,20 @@ public class VideoRecordingActivity extends Activity {
 	@SuppressLint("NewApi")
 	private void loadVideoSizes() {
 		videoSizeSpinner = (Spinner) findViewById(R.id.videoSizeSpinner);
-		if (Build.VERSION.SDK_INT >= 11) {
-			List<Size> sizes = CameraHelper.getCameraSupportedVideoSizes(recordingManager.getCameraManager().getCamera());
-			supportedSizes.clear();
-			supportedSizes.addAll(sizes);
-			videoSizeSpinner.setAdapter(new SizeAdapter(sizes));
-			videoSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-				@Override
-				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-					restartPreview((Size) arg0.getItemAtPosition(arg2));
-				}
+		List<Size> sizes = CameraHelper.getCameraSupportedVideoSizes(recordingManager.getCameraManager().getCamera());
+		supportedSizes.clear();
+		supportedSizes.addAll(sizes);
+		videoSizeSpinner.setAdapter(new SizeAdapter(sizes));
+		videoSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				restartPreview((Size) arg0.getItemAtPosition(arg2));
+			}
 
-				@Override
-				public void onNothingSelected(AdapterView<?> arg0) {
-				}
-			});
-		}
-		else {
-			videoSizeSpinner.setVisibility(View.GONE);
-		}
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
 	}
 
 	private Size pickPreferredSize() {

@@ -59,8 +59,8 @@ public class CameraHelper {
 	
 	@SuppressLint("NewApi")
 	public static List<Size> getCameraSupportedVideoSizes(android.hardware.Camera camera) {
-		if ((Build.VERSION.SDK_INT >= 11) && (camera != null)) {
-			if (camera.getParameters().getSupportedVideoSizes() != null) {
+		if (camera != null) {
+			if ((Build.VERSION.SDK_INT >= 11) && camera.getParameters().getSupportedVideoSizes() != null) {
 				return camera.getParameters().getSupportedVideoSizes();
 			} else {
 				// Video sizes may be null, which indicates that all the supported

@@ -123,7 +123,12 @@ public class CameraHelper {
 		}
 
 		if (camera != null) {
-			camera.setDisplayOrientation(camRotationDegree);
+			try {
+				camera.setDisplayOrientation(camRotationDegree);
+			} catch (RuntimeException e) {
+				// java.lang.RuntimeException: set display orientation failed
+				e.printStackTrace();
+			}
 		}
 		return camRotationDegree;
 	}

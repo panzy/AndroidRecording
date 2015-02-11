@@ -124,8 +124,13 @@ public class CameraManager {
 	}
 	
 	public void startCameraPreview() {
-		camera.startPreview();
-		isPreviewStarted = true;
+		try {
+			camera.startPreview();
+			isPreviewStarted = true;
+		} catch (RuntimeException e) {
+			// java.lang.RuntimeException: startPreview failed
+			e.printStackTrace();
+		}
 	}
 	
 	public void stopCameraPreview() {

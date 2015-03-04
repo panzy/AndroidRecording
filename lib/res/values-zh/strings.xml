@@ -1,0 +1,14 @@
+<resources>
+
+	<string name="recordBtn">录制</string>
+	<string name="stopRecordBtn">停止</string>
+	<string name="playBtn">预览</string>
+
+	<string name="noExtStorageAvailable">外部存储不可用</string>
+	<string name="recordingError">无法录制音频</string>
+	<string name="saveRecordError">无法保存音频</string>
+	<string name="videoRecordingError">无法录制视频</string>
+	<string name="discardBtn">丢弃</string>
+	<string name="acceptBtn">接受</string>
+	<string name="retakeBtn">重拍</string>
+</resources>

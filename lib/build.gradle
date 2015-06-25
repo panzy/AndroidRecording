@@ -1,6 +1,7 @@
 import com.android.builder.core.DefaultManifestParser
 
 apply plugin: 'android-library'
+apply plugin: 'maven'
 
 buildscript {
     repositories {
@@ -83,11 +84,11 @@ android {
         disable 'OldTargetApi', 'SimpleDateFormat', 'StringFormatInvalid', 'InvalidPackage', 'PropertyEscape'
     }
 
-    libraryVariants.all { variant ->
+    def manifestParser = new DefaultManifestParser();
+    def ver = manifestParser.getVersionName(
+            android.sourceSets.main.manifest.srcFile);
 
-        def manifestParser = new DefaultManifestParser();
-        def ver = manifestParser.getVersionName(
-                android.sourceSets.main.manifest.srcFile);
+    libraryVariants.all { variant ->
 
         variant.outputs.each { output ->
             output.outputFile = new File(
@@ -97,5 +98,18 @@ android {
                         : "recording-${ver}.aar");
         }
     }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                def MAVEN_LOCAL_PATH = 'file://' + System.getenv('HOME') + "/.m2/repository/";
+                repository(url: MAVEN_LOCAL_PATH)
+                    pom.groupId = 'com.skd'
+                    pom.artifactId = 'recording'
+                    pom.version = ver
+            }
+        }
+    }
 }
+
 

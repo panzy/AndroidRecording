@@ -16,7 +16,7 @@ For video it uses:
 How to build
 ------------
 
-1. cd lib && gradle a
+1. cd lib && gradle a uploadArchives
 2. cd demo && gradle a
 
 Record audio: how to use

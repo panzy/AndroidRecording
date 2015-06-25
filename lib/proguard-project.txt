@@ -20,3 +20,4 @@
 #}
 
 -dontwarn simplesound.**
+-keep class com.skd.** { *; }

@@ -6,3 +6,5 @@ Manifest.java
 *.iml
 .idea
 demo/out
+.gradle/
+*/build/

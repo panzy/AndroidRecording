@@ -13,6 +13,12 @@ For video it uses:
 * MediaPlayer with MediaController to play recorded video
 * custom SurfaceView with adjustable size to properly display Camera preview and recorded video (in portrait and landscape modes)
 
+How to build
+------------
+
+1. cd lib && gradle a
+2. cd demo && gradle a
+
 Record audio: how to use
 ------------------------
 

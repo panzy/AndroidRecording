@@ -22,9 +22,11 @@ import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Build;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
+import java.util.List;
 
 /*
  * Manages camera preview
@@ -32,6 +34,7 @@ import java.io.IOException;
 
 public class CameraManager {
 
+	private static final String TAG = "CameraManager";
 	private Camera camera;
 	private int camerasCount;
 	private int defaultCameraID;
@@ -80,7 +83,15 @@ public class CameraManager {
 
 		Parameters param = camera.getParameters();
 
-		param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+		if (Build.VERSION.SDK_INT >= 9) {
+			List<String> focusModes = param.getSupportedFocusModes();
+			if (focusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+				Log.d(TAG, "turn on Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO");
+				param.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+			} else {
+				Log.d(TAG, "Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO is not supported");
+			}
+		}
 		param.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
         if (Build.VERSION.SDK_INT >= 14)
             param.setRecordingHint(true);

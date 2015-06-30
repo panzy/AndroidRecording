@@ -5,7 +5,8 @@ apply plugin: 'maven'
 
 buildscript {
     repositories {
-        mavenCentral()
+        //mavenCentral()
+        maven { url 'http://mirrors.ibiblio.org/maven2/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.0'

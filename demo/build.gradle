@@ -12,15 +12,12 @@ buildscript {
 allprojects {
     repositories {
         maven { url System.getenv('HOME') + '/.m2/repository' }
-        flatDir {
-            dirs '../lib/build/outputs/aar'
-        }
     }
 }
 
 dependencies {
-    compile(name: 'recording-1.0', ext: 'aar')
     compile 'com.android.support:support-v4:21.0.2'
+    compile 'com.skd:recording:1.0@aar'
 }
 
 android {

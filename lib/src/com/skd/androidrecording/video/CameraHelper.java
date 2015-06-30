@@ -17,6 +17,7 @@
 package com.skd.androidrecording.video;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
@@ -34,10 +35,12 @@ import java.util.List;
 
 public class CameraHelper {
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public static int getAvailableCamerasCount() {
 		return Camera.getNumberOfCameras();
 	}
 	
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public static int getDefaultCameraID() {
 		int camerasCnt = getAvailableCamerasCount();
 		int defaultCameraID = 0;
@@ -51,6 +54,7 @@ public class CameraHelper {
         return defaultCameraID;
 	}
 	
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public static boolean isCameraFacingBack(int cameraID) {
 		CameraInfo cameraInfo = new CameraInfo();
 		Camera.getCameraInfo(cameraID, cameraInfo);

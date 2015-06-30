@@ -16,6 +16,7 @@
 
 package com.skd.androidrecording.video;
 
+import android.annotation.TargetApi;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
@@ -47,11 +48,17 @@ public class CameraManager {
 		defaultCameraID = CameraHelper.getDefaultCameraID();
 	}
 	
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public void openCamera() {
 		if (camera != null) {
 			releaseCamera();
 		}
-		camera = Camera.open(defaultCameraID);
+		try {
+			camera = Camera.open(defaultCameraID);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			camera = null;
+		}
 	}
 	
 	public void releaseCamera() {

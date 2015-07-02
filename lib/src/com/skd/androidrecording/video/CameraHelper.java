@@ -111,6 +111,7 @@ public class CameraHelper {
 		return result;
 	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public static int setCameraDisplayOrientation(int cameraId, android.hardware.Camera camera, int displayRotation) {
 		Camera.CameraInfo info = new Camera.CameraInfo();
 		Camera.getCameraInfo(cameraId, info);

@@ -11,4 +11,5 @@
 	<string name="discardBtn">Discard</string>
 	<string name="acceptBtn">Accept</string>
 	<string name="retakeBtn">Retake</string>
+	<string name="select_video_size">Video Size</string>
 </resources>

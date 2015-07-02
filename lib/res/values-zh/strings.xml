@@ -11,4 +11,5 @@
 	<string name="discardBtn">丢弃</string>
 	<string name="acceptBtn">接受</string>
 	<string name="retakeBtn">重拍</string>
+	<string name="select_video_size">画面尺寸</string>
 </resources>

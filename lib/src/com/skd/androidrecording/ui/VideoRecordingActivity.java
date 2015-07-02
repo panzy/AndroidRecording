@@ -2,6 +2,8 @@ package com.skd.androidrecording.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera.Size;
 import android.net.Uri;
@@ -48,6 +50,7 @@ public class VideoRecordingActivity extends Activity {
 	private TextView durationText;
 	private TextView fileSizeText;
 
+	// current video size
 	private Size videoSize = null;
 	private int preferredWidth;
 	private int preferredHeight;
@@ -200,6 +203,13 @@ public class VideoRecordingActivity extends Activity {
 		else {
 			switchBtn.setVisibility(View.GONE);
 		}
+
+		findViewById(R.id.settingBtn).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showSettings();
+			}
+		});
 		
 		if (hideVideoSizePicker) {
 			findViewById(R.id.videoSizeSpinner).setVisibility(View.GONE);
@@ -387,5 +397,25 @@ public class VideoRecordingActivity extends Activity {
 		Intent i = new Intent(VideoRecordingActivity.this, VideoPlaybackActivity.class);
 		i.putExtra(VideoPlaybackActivity.FileNameArg, fileName);
 		startActivityForResult(i, REQ_PREVIEW);
+	}
+
+	private void showSettings() {
+		String[] items = new String[supportedSizes.size()];
+		int i = 0;
+		for (Size sz : supportedSizes) {
+			items[i] = String.format("%c %d x %d", (sz == videoSize ? '*' : ' '), sz.width, sz.height);
+			++i;
+		}
+
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.select_video_size)
+				.setItems(items, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						restartPreview(supportedSizes.get(which));
+					}
+				})
+				.create()
+				.show();
 	}
 }

@@ -54,6 +54,14 @@ public class AdaptiveSurfaceView extends SurfaceView {
 			previewWidth = size.width > size.height ? size.width : size.height;
 			previewHeight = size.width <= size.height ? size.width : size.height;
 		}
+
+		// scale to nearly full screen
+		float scale1 = (float)screenW / previewWidth;
+		float scale2 = (float)screenH / previewHeight;
+		float scale = Math.min(scale1, scale2);
+		previewWidth *= scale;
+		previewHeight *= scale;
+
 		ratio = previewHeight / (float) previewWidth;
 		requestLayout();
 	}

@@ -12,8 +12,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.*;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.skd.androidrecording.R;
 import com.skd.androidrecording.video.AdaptiveSurfaceView;
 import com.skd.androidrecording.video.CameraHelper;
@@ -46,7 +47,7 @@ public class VideoRecordingActivity extends Activity {
 	private AdaptiveSurfaceView videoView;
 	private ImageButton recordBtn;
 	private ImageButton switchBtn;
-	private Spinner videoSizeSpinner;
+	private View settingBtn;
 	private TextView durationText;
 	private TextView fileSizeText;
 
@@ -204,7 +205,8 @@ public class VideoRecordingActivity extends Activity {
 			switchBtn.setVisibility(View.GONE);
 		}
 
-		findViewById(R.id.settingBtn).setOnClickListener(new OnClickListener() {
+		settingBtn = (ImageButton) findViewById(R.id.settingBtn);
+		settingBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				showSettings();
@@ -212,7 +214,7 @@ public class VideoRecordingActivity extends Activity {
 		});
 		
 		if (hideVideoSizePicker) {
-			findViewById(R.id.videoSizeSpinner).setVisibility(View.GONE);
+			findViewById(R.id.settingBtn).setVisibility(View.GONE);
 		}
 	}
 
@@ -259,21 +261,9 @@ public class VideoRecordingActivity extends Activity {
 
 	@SuppressLint("NewApi")
 	private void loadVideoSizes() {
-		videoSizeSpinner = (Spinner) findViewById(R.id.videoSizeSpinner);
 		List<Size> sizes = CameraHelper.getCameraSupportedVideoSizes(recordingManager.getCameraManager().getCamera());
 		supportedSizes.clear();
 		supportedSizes.addAll(sizes);
-		videoSizeSpinner.setAdapter(new SizeAdapter(sizes));
-		videoSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				restartPreview((Size) arg0.getItemAtPosition(arg2));
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-			}
-		});
 	}
 
 	private Size pickPreferredSize() {
@@ -292,16 +282,6 @@ public class VideoRecordingActivity extends Activity {
 						delta = d;
 					}
 				}
-			}
-
-			if (!hideVideoSizePicker) {
-				// suspend listener
-				OnItemSelectedListener l = videoSizeSpinner.getOnItemSelectedListener();
-				videoSizeSpinner.setOnItemSelectedListener(null);
-				// set selection
-				videoSizeSpinner.setSelection(idx);
-				// restore listener
-				videoSizeSpinner.setOnItemSelectedListener(l);
 			}
 
 			return supportedSizes.get(idx);
@@ -379,7 +359,7 @@ public class VideoRecordingActivity extends Activity {
 		recordBtn.setImageResource(R.drawable.btn_record_video_start);
 		switchBtn.setVisibility(View.VISIBLE);
 		if (!hideVideoSizePicker)
-			videoSizeSpinner.setVisibility(View.VISIBLE);
+			settingBtn.setVisibility(View.VISIBLE);
 		durationText.setVisibility(View.INVISIBLE);
 		fileSizeText.setVisibility(View.INVISIBLE);
 	}
@@ -388,7 +368,7 @@ public class VideoRecordingActivity extends Activity {
 		recordBtn.setImageResource(R.drawable.btn_record_video_stop);
 		switchBtn.setVisibility(View.GONE);
 		if (!hideVideoSizePicker)
-			videoSizeSpinner.setVisibility(View.GONE);
+			settingBtn.setVisibility(View.GONE);
 		durationText.setVisibility(View.VISIBLE);
 		fileSizeText.setVisibility(View.VISIBLE);
 	}

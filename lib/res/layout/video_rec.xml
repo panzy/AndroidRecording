@@ -87,15 +87,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"/>
         </RelativeLayout>
-
-        <Spinner
-            android:id="@+id/videoSizeSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            />
     </LinearLayout>
 
 </RelativeLayout>

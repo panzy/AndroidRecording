@@ -8,3 +8,4 @@ Manifest.java
 demo/out
 .gradle/
 */build/
+local.properties

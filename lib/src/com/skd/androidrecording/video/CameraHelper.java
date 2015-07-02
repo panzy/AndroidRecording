@@ -25,7 +25,6 @@ import android.os.Build;
 import android.view.Surface;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /*
@@ -34,6 +33,15 @@ import java.util.List;
  */
 
 public class CameraHelper {
+
+	private static int[] allowedSizes = {
+			// width, height,
+			1920, 1080,
+			1280, 720,
+			720, 480,
+			640, 480,
+			320, 240
+	};
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public static int getAvailableCamerasCount() {
@@ -86,26 +94,18 @@ public class CameraHelper {
 	private static List<Size> filterVideoSizes(Camera camera, List<Size> supportedSizes) {
 		// Video sizes may be null, which indicates that all the supported
 		// preview sizes are supported for video recording.
-		HashSet<String> allSizesLiteral = new HashSet<>();
+		StringBuilder allSizesLiteralSB = new StringBuilder();
 		for (Size sz : supportedSizes) {
-            allSizesLiteral.add(String.format("%dx%d", sz.width, sz.height));
+            allSizesLiteralSB.append(String.format("(%dx%d)", sz.width, sz.height));
         }
+		String allSizesLiteral = allSizesLiteralSB.toString();
 
-		// on Samsung Galaxy 3, the supported preview sizes are too many,
-		// but it seems that not all of them can be used as recording video size.
-		// the following set are used by the built-in camera app.
-		Size[] preferredSizes = {
-                camera.new Size(1920, 1080),
-                camera.new Size(1280, 720),
-                camera.new Size(720, 480),
-                camera.new Size(640, 480),
-                camera.new Size(320, 240)
-        };
-
-		List<Size> result = new ArrayList<>(preferredSizes.length);
-		for (Size sz : preferredSizes) {
-            if (allSizesLiteral.contains(String.format("%dx%d", sz.width, sz.height)))
-                result.add(sz);
+		List<Size> result = new ArrayList<>(allowedSizes.length);
+		for (int i = 0; i < allowedSizes.length; i += 2) {
+			int w = allowedSizes[i];
+			int h = allowedSizes[i + 1];
+            if (allSizesLiteral.contains(String.format("(%dx%d)", w, h)))
+                result.add(camera.new Size(w, h));
         }
 
 		return result;

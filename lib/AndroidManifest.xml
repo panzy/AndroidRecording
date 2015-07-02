@@ -3,6 +3,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <!-- 完整功能在 API 9 以上才能工作，这里设置成 8 只是为了允许具有更低 minSdkVersion 的程序使用该库。-->
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />

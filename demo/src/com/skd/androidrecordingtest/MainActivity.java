@@ -13,6 +13,8 @@ import android.widget.ListView;
 import com.skd.androidrecording.ui.AudioRecordingActivity;
 import com.skd.androidrecording.ui.VideoRecordingActivity;
 
+import java.util.ArrayList;
+
 public class MainActivity extends Activity {
 
 	private static final int REQ_CAP_VIDEO = 123;
@@ -44,8 +46,16 @@ public class MainActivity extends Activity {
 				break;
 			}
 			case 1: {
+				ArrayList<Integer> allowedSizes = new ArrayList<>(5);
+				allowedSizes.add(1920);
+				allowedSizes.add(1080);
+				allowedSizes.add(1280);
+				allowedSizes.add(720);
+				allowedSizes.add(720);
+				allowedSizes.add(480);
 				Intent i = new Intent(MainActivity.this, VideoRecordingActivity.class)
 						.putExtra(VideoRecordingActivity.EXTRA_HIDE_VIDEOSIZE_PICKER, false)
+						.putExtra(VideoRecordingActivity.EXTRA_ALLOWED_VIDEO_SIZES, allowedSizes)
 						.putExtra(VideoRecordingActivity.EXTRA_FILE_LIMIT, 1024 * 1024 * 16)
 						.putExtra(VideoRecordingActivity.EXTRA_DURATION_LIMIT, 10)
 						.putExtra(VideoRecordingActivity.EXTRA_PREFERRED_WIDTH, 1280)

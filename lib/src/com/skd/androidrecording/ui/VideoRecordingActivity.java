@@ -33,6 +33,9 @@ public class VideoRecordingActivity extends Activity {
 	public static final String EXTRA_DURATION_LIMIT = "duration_limit";
 	/** 输入参数：是否隐藏视频尺寸选择控件？ */
 	public static final String EXTRA_HIDE_VIDEOSIZE_PICKER = "hide_videosize_picker";
+	/** 输入参数：不允许除这些以外的视频尺寸供用户选择。
+	 * 值应该是一个 ArrayList&lt;Integer&gt; = [ size1.w, size1.h, size2.w, size2.h, ... ]*/
+	public static final String EXTRA_ALLOWED_VIDEO_SIZES = "allowed_video_sizes ";
 
 	private static final int REQ_PREVIEW = 123;
 
@@ -51,6 +54,7 @@ public class VideoRecordingActivity extends Activity {
 	private int durationLimit = 0;
 	private int fileLimit = 0;
 	private boolean hideVideoSizePicker;
+	private ArrayList<Integer> allowedSizes;
 	private ArrayList<Size> supportedSizes = new ArrayList<>();
 	private VideoRecordingManager recordingManager;
 	private boolean previewStarted;
@@ -153,6 +157,7 @@ public class VideoRecordingActivity extends Activity {
 			fileLimit = savedInstanceState.getInt(EXTRA_FILE_LIMIT);
 			durationLimit = savedInstanceState.getInt(EXTRA_DURATION_LIMIT);
 			hideVideoSizePicker = savedInstanceState.getBoolean(EXTRA_HIDE_VIDEOSIZE_PICKER);
+			allowedSizes = savedInstanceState.getIntegerArrayList(EXTRA_ALLOWED_VIDEO_SIZES);
 		} else if (getIntent() != null && getIntent().getExtras() != null) {
 			Bundle bundle = getIntent().getExtras();
 			preferredWidth = bundle.getInt(EXTRA_PREFERRED_WIDTH);
@@ -160,6 +165,10 @@ public class VideoRecordingActivity extends Activity {
 			fileLimit = bundle.getInt(EXTRA_FILE_LIMIT);
 			durationLimit = bundle.getInt(EXTRA_DURATION_LIMIT);
 			hideVideoSizePicker = bundle.getBoolean(EXTRA_HIDE_VIDEOSIZE_PICKER);
+			allowedSizes = bundle.getIntegerArrayList(EXTRA_ALLOWED_VIDEO_SIZES);
+		}
+		if (allowedSizes != null) {
+			CameraHelper.setAllowedVideoSizes(allowedSizes);
 		}
 		
 		videoView = (AdaptiveSurfaceView) findViewById(R.id.videoView);

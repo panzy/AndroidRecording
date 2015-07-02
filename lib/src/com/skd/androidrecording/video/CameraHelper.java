@@ -149,4 +149,17 @@ public class CameraHelper {
 		}
 		return camRotationDegree;
 	}
+
+	public static void setAllowedVideoSizes(int[] sizes) {
+		allowedSizes = sizes;
+	}
+
+	public static void setAllowedVideoSizes(ArrayList<Integer> sizes) {
+		allowedSizes = new int[sizes.size()];
+		int i = 0;
+		for (Integer value : sizes) {
+			allowedSizes[i] = value;
+			++i;
+		}
+	}
 }

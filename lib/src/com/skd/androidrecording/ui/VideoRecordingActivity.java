@@ -9,6 +9,7 @@ import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -345,7 +346,14 @@ public class VideoRecordingActivity extends Activity {
 
 			@Override
 			protected void onPostExecute(Boolean result) {
-				recordBtn.setEnabled(true);
+				// 某些设备上录制时间太短（<1sec）会出错
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						recordBtn.setEnabled(true);
+					}
+				}, 1000);
+
 				if (result)
 					updateUiStateForRecording();
 				else
